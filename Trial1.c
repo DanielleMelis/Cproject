@@ -35,6 +35,7 @@ int main(int argc, char* argv[]){
 	}
 
 	// may free line again
+	free(line);
 
 	printf("done\n");
 
