@@ -88,9 +88,9 @@ int main(int argc, char* argv[]){
 		noOfPassedEdges++;
 		int target = -1;
 		struct EdgeEnd *targetEdgeEnd = nodes[currentNode].edge;
-		printf("DEBUG %d\n", targetEdgeEnd->targetNodeIdx);
-		printf("DEBUG %d\n", targetEdgeEnd->next->targetNodeIdx);
-		printf("DEBUG %d\n", targetEdgeEnd->next->next->targetNodeIdx);
+	//	printf("DEBUG %d\n", targetEdgeEnd->targetNodeIdx);
+	//	printf("DEBUG %d\n", targetEdgeEnd->next->targetNodeIdx);
+	//	printf("DEBUG %d\n", targetEdgeEnd->next->next->targetNodeIdx);
 
 		while(target == -1) {
 			printf("target %d is visited %d\n", targetEdgeEnd->targetNodeIdx, targetEdgeEnd->visited);
