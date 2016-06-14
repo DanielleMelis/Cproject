@@ -123,6 +123,7 @@ int main(int argc, char* argv[]){
 //	printf("%d  ", currentNode);
 LOOPMEBACK: 	while(noOfPassedEdges != noOfEdges){
 		noOfPassedEdges++;
+		
 		int target = -1;
 		struct EdgeEnd *currentConnection = nodes[currentNode].edge;
 
@@ -164,16 +165,21 @@ LOOPMEBACK: 	while(noOfPassedEdges != noOfEdges){
 				currentConnection = currentConnection -> next;
 
 			}else{
-				printf("backtrack needed\n");
-				currentConnection-> visited = -1;
-				currentConnection -> otherSide -> visited = -1;
-				currentNode = backMeup[--counter];
-				--noOfPassedEdges;
-				goto LOOPMEBACK;
-				return 0;
+					//printf("DEBUG: backtrack needed\n");
+							currentConnection->visited = -1;
+							currentConnection->otherSide->visited = -1;
+							backMeup[counter] = NULL;
+							counter--;
+												//printf("DEBUG: counter index addressing %4d\n", counter );
+							if(counter >= 0){
+								currentNode = backMeup[counter];
+								--noOfPassedEdges;
+								goto LOOPMEBACK;
+							}		
 			}	
 
 		}
+
 		
 
 		currentConnection-> visited = 1;
@@ -198,13 +204,13 @@ LOOPMEBACK: 	while(noOfPassedEdges != noOfEdges){
 		
 	}
 // small check in
-	int nodeMe = 2;
-	struct EdgeEnd *tryingmyBest = nodes[nodeMe].edge;
-	printf("all connections from 2: \n");
-	while(tryingmyBest->next != NULL){
-		tryingmyBest = tryingmyBest->next;
-		printf(" DEBUG %d - %d visited tag: %d\n", nodeMe, tryingmyBest->targetNodeIdx, tryingmyBest->visited);
-	}
+	// int nodeMe = 2;
+	// struct EdgeEnd *tryingmyBest = nodes[nodeMe].edge;
+	// printf("all connections from 2: \n");
+	// while(tryingmyBest->next != NULL){
+	// 	tryingmyBest = tryingmyBest->next;
+	// 	printf(" DEBUG %d - %d visited tag: %d\n", nodeMe, tryingmyBest->targetNodeIdx, tryingmyBest->visited);
+	// }
 
 
 	free(line);
