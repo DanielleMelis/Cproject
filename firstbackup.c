@@ -121,8 +121,11 @@ int main(int argc, char* argv[]){
 	
 
 //	printf("%d  ", currentNode);
-LOOPMEBACK: 	while(noOfPassedEdges != noOfEdges){
-		noOfPassedEdges++;
+LOOPMEBACK: 	
+
+while(noOfPassedEdges != noOfEdges){
+	noOfPassedEdges++;
+		
 		
 		int target = -1;
 		struct EdgeEnd *currentConnection = nodes[currentNode].edge;
@@ -145,6 +148,7 @@ LOOPMEBACK: 	while(noOfPassedEdges != noOfEdges){
 
 			if(!currentConnection->visited){				
 				target = currentConnection ->targetNodeIdx;
+				
 
 				struct EdgeEnd *currentTest = nodes[currentNode].edge;
 				int possibilityPtr = 0;
@@ -170,17 +174,16 @@ LOOPMEBACK: 	while(noOfPassedEdges != noOfEdges){
 							currentConnection->otherSide->visited = -1;
 							backMeup[counter] = NULL;
 							counter--;
+
 												//printf("DEBUG: counter index addressing %4d\n", counter );
 							if(counter >= 0){
 								currentNode = backMeup[counter];
-								--noOfPassedEdges;
+								noOfPassedEdges--;
 								goto LOOPMEBACK;
 							}		
 			}	
 
-		}
-
-		
+		}		
 
 		currentConnection-> visited = 1;
 		currentConnection -> otherSide -> visited = 1;	
@@ -196,17 +199,27 @@ LOOPMEBACK: 	while(noOfPassedEdges != noOfEdges){
 
 //	A quick checkpoint to see which path is calculated
 
-		printf("Current Path: \t");
+
+		
+	 }
+
+	 struct EdgeEnd *checkLastConnection = nodes[currentNode].edge;
+	 if(checkLastConnection->visited == -1){
+	 	printf("HI, I will fix your problem now\n");
+	 	int lastPoint = checkLastConnection->targetNodeIdx;
+	 	backMeup[++counter]= lastPoint;
+	 }
+
+	 		printf("Current Path: \t");
 		for (int i = 0; i <= counter; i++){
 			printf("%d ",backMeup[i]);
 		}
 		printf("\n");
-		
-	}
-// small check in
-	// int nodeMe = 2;
+
+//small check in
+	// int nodeMe = 97;
 	// struct EdgeEnd *tryingmyBest = nodes[nodeMe].edge;
-	// printf("all connections from 2: \n");
+	// printf("all connections from 97: \n");
 	// while(tryingmyBest->next != NULL){
 	// 	tryingmyBest = tryingmyBest->next;
 	// 	printf(" DEBUG %d - %d visited tag: %d\n", nodeMe, tryingmyBest->targetNodeIdx, tryingmyBest->visited);
@@ -218,4 +231,3 @@ LOOPMEBACK: 	while(noOfPassedEdges != noOfEdges){
 	free(allPossibilities);
 	printf("done\n");
 }
-
