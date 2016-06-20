@@ -18,12 +18,13 @@ struct EdgeEnd{
 	int targetNodeIdx;
 };
 
-int getNoOfVertices(FILE *file, char *line, size_t n){
-	getline(&line, &n, file);
+int readNoOfVertices(FILE *file){
+	char * line = NULL;
+	size_t zero = 0;
+
+	getline(&line, &zero, file);
 	int noOfVertices = atoi(line);
-	//printf("DEBUG:	%d\n", noOfVertices);
 	free(line);
-	line=NULL;
 	return noOfVertices;
 }
 
@@ -74,19 +75,19 @@ int eulerCheck(int noOfVertices, struct Node *nodes){
 	}
 }
 
-int main(int argc, char* argv[]){
+FILE *openFile(int argc, char* argv[]) {
 	if (argc != 2){
 		printf("Invalid input");
 		exit(1);
 	}
 
-	FILE *file = fopen(argv[1], "r");
+	return fopen(argv[1], "r");
+}
+
+void getLines(FILE *file, int noOfVertices, struct Node *nodes) {
 	char *line = NULL;
 	size_t n = 0;
 
-	int noOfVertices = getNoOfVertices(file, line, n);
-
-	struct Node nodes[noOfVertices];
 	memset(nodes, 0, noOfVertices*sizeof(struct Node));
 	
 	while(getline(&line, &n, file) > 0){
@@ -101,12 +102,22 @@ int main(int argc, char* argv[]){
 	}
 
 	free(line);
+}
+
+int main(int argc, char* argv[]){
+	FILE *file = openFile(argc, argv);
+
+	int noOfVertices = readNoOfVertices(file);
+
+	struct Node nodes[noOfVertices];
+	getLines(file, noOfVertices, nodes);
+
+
+	
 
 	int currentNode = eulerCheck(noOfVertices, nodes);
 
 	int noOfPassedEdges = 0;
-	
-	int *allPossibilities = malloc(noOfVertices*sizeof(int));
 	int counter = 0;
 	int *backMeup = malloc(noOfEdges*sizeof(int));
 	backMeup[counter] = currentNode;	
@@ -118,34 +129,17 @@ int main(int argc, char* argv[]){
 		noOfPassedEdges++;	
 		
 		int target = -1;
-		struct EdgeEnd *currentConnection = nodes[currentNode].edge;	
+		struct EdgeEnd *currentConnection = nodes[currentNode].edge; // get the first edge	
 
 		while(target == -1){		
 			if(!currentConnection->visited){				
 				target = currentConnection ->targetNodeIdx;
-				
-				struct EdgeEnd *currentTest = nodes[currentNode].edge;
-				int possibilityPtr = 0;
-				while(currentTest->next != NULL){
-					currentTest = currentTest->next;
-					allPossibilities[possibilityPtr++] = currentTest->targetNodeIdx;		
-				}
-				
-				// Let's check what we even got in allPossibilities
-				printf("All possbilities \t");
-				for (int i = 0; i < possibilityPtr; i++){
-					printf("%d  ", allPossibilities[i]);
-				}
-				printf("\n");
-
-
 			}else if(currentConnection->next != NULL){
 				currentConnection = currentConnection -> next;
-
 			}else{
 				currentConnection->visited = -1;
 				currentConnection->otherSide->visited = -1;
-				backMeup[counter] = NULL;
+				backMeup[counter] = 0; // NULL? is this correct?
 				counter--;
 
 				if(counter >= 0){
@@ -157,11 +151,7 @@ int main(int argc, char* argv[]){
 		}
 
 		currentConnection-> visited = 1;
-		currentConnection -> otherSide -> visited = 1;	
-
-		printf("route from %d to %d\n", currentNode, target);
-
-		printf("\n");
+		currentConnection -> otherSide -> visited = 1;
 
 		currentNode = target;
 		backMeup[++counter] = currentNode;
@@ -190,6 +180,5 @@ int main(int argc, char* argv[]){
 	// }
 
 	//free(backMeup);
-	free(allPossibilities);
 	printf("done\n");
 }
