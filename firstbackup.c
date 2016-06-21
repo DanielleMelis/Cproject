@@ -113,59 +113,41 @@ int main(int argc, char* argv[]){
 	getLines(file, noOfVertices, nodes);
 
 
-	
-
-	int currentNode = eulerCheck(noOfVertices, nodes);
+	int startNodeIdx = eulerCheck(noOfVertices, nodes);
 
 	int noOfPassedEdges = 0;
 	int counter = 0;
-	int *backMeup = malloc(noOfEdges*sizeof(int));
-	backMeup[counter] = currentNode;	
+	int *backMeup = malloc((noOfEdges+1)*sizeof(int));
+	memset(backMeup, -1, noOfEdges*sizeof(int));
+	backMeup[counter] = startNodeIdx;	
 
-	printf("%d\n", currentNode);
+	printf("%d\n", startNodeIdx);
 
-	LOOPMEBACK:
-	while(noOfPassedEdges != noOfEdges){
-		noOfPassedEdges++;	
-		
-		int target = -1;
-		struct EdgeEnd *currentConnection = nodes[currentNode].edge; // get the first edge	
+	struct EdgeEnd *currentConnection = nodes[startNodeIdx].edge;
 
-		while(target == -1){		
-			if(!currentConnection->visited){				
-				target = currentConnection ->targetNodeIdx;
-			}else if(currentConnection->next != NULL){
-				currentConnection = currentConnection -> next;
-			}else{
-				currentConnection->visited = -1;
-				currentConnection->otherSide->visited = -1;
-				backMeup[counter] = 0; // NULL? is this correct?
-				counter--;
+	while(noOfPassedEdges != noOfEdges) {
+		if((!currentConnection->visited) && (currentConnection->targetNodeIdx != backMeup[noOfPassedEdges+1])) {
+			currentConnection->visited = 1;
+			currentConnection->otherSide->visited = 1;
+			noOfPassedEdges++;
+			backMeup[noOfPassedEdges] = currentConnection->targetNodeIdx;
 
-				if(counter >= 0){
-					currentNode = backMeup[counter];
-					noOfPassedEdges--;
-					goto LOOPMEBACK;
-				}		
-			}
+			currentConnection = nodes[currentConnection->targetNodeIdx].edge;
+			printf("We are at %d\n", backMeup[noOfPassedEdges]);
+
+		} else if (currentConnection->next != NULL) {
+			currentConnection = currentConnection->next;
+		} else {
+			//currentConnection->visited = -1;
+			//currentConnection->otherSide->visited = -1;
+
+			noOfPassedEdges--;
+			currentConnection = nodes[noOfPassedEdges].edge;
 		}
-
-		currentConnection-> visited = 1;
-		currentConnection -> otherSide -> visited = 1;
-
-		currentNode = target;
-		backMeup[++counter] = currentNode;
-	}
-
-	struct EdgeEnd *checkLastConnection = nodes[currentNode].edge;
-	if(checkLastConnection->visited == -1){
-		printf("HI, I will fix your problem now\n");
-		int lastPoint = checkLastConnection->targetNodeIdx;
-		backMeup[++counter]= lastPoint;
 	}
 
 	printf("Current Path: \t");
-	for (int i = 0; i <= counter; i++){
+	for (int i = 0; i <= noOfPassedEdges; i++){
 		printf("%d ",backMeup[i]);
 	}
 	printf("\n");
