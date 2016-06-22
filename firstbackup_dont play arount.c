@@ -3,6 +3,15 @@
 #include <string.h>
 #include <time.h>
 
+/* 	A code we deserve but don't need.  
+	WARNING!: if following side effects are observed, you are strongly
+	advised to step away from the screen
+	-	questioning the meaning of your life
+	-  	an irresistable urge to hit the person behind this code
+	-	frustration and losing faith in humanity
+	-	worshipping the flying magical pointers
+*/
+
 int noOfEdges;
 
 struct Node{
@@ -173,6 +182,7 @@ LOOPMEAGAIN:
 			free(cleanup);
 		}
 	}
+	
 	printf("\n");
 	free(backMeup);
 	printf("done\n");
